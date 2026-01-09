@@ -4,3 +4,4 @@ This includes the original implementation of D²-RAG: Dual-Decision Retrieval-Au
 
 **D²-RAG** is a framework that achieves adaptive knowledge retrieval and utilization through a dual-stage decision mechanism.
 
+![](figure/D²-RAG.svg)
