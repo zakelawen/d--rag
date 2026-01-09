@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-run_conditional_acd_v3_combo_alpha.py
-按 (alpha_pos, alpha_neg) 组合输出：每个组合一个 jsonl 文件。
-策略规则：
-- needs_retrieval = 0 -> noctx-normal（无上下文，贪婪）
-- needs_retrieval = 1:
-    d < HARMFUL_THRESHOLD      -> ctx-neg-acd（用 alpha_neg）
-    d > USEFUL_THRESHOLD       -> ctx-pos-acd（用 alpha_pos）
-    介于两者之间/None          -> ctx-normal（带上下文，贪婪）
-"""
 
 import os
 import json
@@ -20,31 +10,30 @@ from transformers import AutoTokenizer, GenerationConfig
 from gen_wrapper import LMWrapper
 from tqdm import tqdm
 
-# ====== 配置 ======
-MODEL_NAME = "/mnt/zhangjinshuo/models--Qwen--Qwen2.5-7B-Instruct/snapshots/a09a35458c702b33eeacc393d103063234e8bc28"
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "1,2"
+
+MODEL_NAME = "/mnt/zhangjinshuo/models--meta-llama--Llama-3.1-8B-Instruct/snapshots/meta-llama3.1-8b"
 CACHE_DIR = "./cache"
 OFFLOAD_DIR = "./offload"
 DEVICE_MAP = "auto"
 MAX_MEMORY = None
 
-INPUT_JSONL = "/home/qluai/zjs/TruthTorchLM-main/medmcqa/对比解码部分/my_method/ACD/qwen_data/medmcqa_seper_results_with_retrieval.jsonl"
+INPUT_JSONL = "/home/qluai/zjs/TruthTorchLM-main/实验/my_method/medexqa/medexqa_llama_seper_results_20251214_003509.jsonl"
 
-HARMFUL_THRESHOLD = -0.1
-USEFUL_THRESHOLD  =  0.3  # 确保 HARMFUL < USEFUL
+HARMFUL_THRESHOLD = -0.0458
+USEFUL_THRESHOLD  =  0.1622
 
 MAX_NEW_TOKENS = 20
-DO_SAMPLE = False  # 强制贪婪
+DO_SAMPLE = False
 GEN_BUDGET_TOKENS = 256
 EVIDENCE_SEP = "\n\n---\n\n"
 
-# 组合 α 列表
 ALPHA_NEG_VALUES = [0.05, 0.1, 0.2]
 ALPHA_POS_VALUES = [0.1, 0.5, 1.0]
 
-# 输出前缀
-BASE_OUTPUT_PATH = "/home/qluai/zjs/TruthTorchLM-main/medmcqa/对比解码部分/my_method/ACD/my_method_qwen_results/medmcqa"
+BASE_OUTPUT_PATH = "/home/qluai/zjs/TruthTorchLM-main/实验/my_method/medexqa"
 
-# ====== 工具函数 ======
 def load_jsonl(path: str) -> List[Dict[str, Any]]:
     data = []
     with open(path, "r", encoding="utf-8") as f:
@@ -103,7 +92,7 @@ def make_gen_config(tokenizer: AutoTokenizer,
         max_new_tokens=MAX_NEW_TOKENS,
         pad_token_id=tokenizer.pad_token_id,
         eos_token_id=tokenizer.eos_token_id,
-        do_sample=do_sample,  # False: 贪婪
+        do_sample=do_sample,
         return_dict_in_generate=True,
         output_scores=False,
     )
@@ -143,13 +132,12 @@ def build_ctx_prompt(tokenizer: AutoTokenizer, stem: str, docs: List[Dict[str, A
     ]
     return apply_chat(tokenizer, messages), ctx_text[:1200]
 
-# ====== 单个组合的完整运行 ======
 def run_single_combo(alpha_pos: float, alpha_neg: float,
                      base_output_path: str,
                      dataset: List[Dict[str, Any]],
                      tokenizer: AutoTokenizer,
                      model: LMWrapper):
-    out_path = f"{base_output_path}_pos_{alpha_pos}_neg_{alpha_neg}.jsonl"
+    out_path = f"{base_output_path}_llama_pos_{alpha_pos}_neg_{alpha_neg}.jsonl"
     ensure_dir_for_file(out_path)
     print(f"\n--- Running combo: POS={alpha_pos} | NEG={alpha_neg} ---")
     print(f"Output -> {out_path}")
@@ -163,9 +151,8 @@ def run_single_combo(alpha_pos: float, alpha_neg: float,
             needs_retrieval = int(item.get("needs_retrieval", 1))
             dscore = item.get("d_seper_full", None)
 
-            # 构主 prompt
             prompt_main = build_main_prompt(tokenizer, stem)
-            # 可选长度提示（不强制）
+
             def _check_len(text: str, tag: str):
                 L = token_len(tokenizer, text)
                 model_max = getattr(tokenizer, "model_max_length", 32768)
@@ -177,7 +164,6 @@ def run_single_combo(alpha_pos: float, alpha_neg: float,
 
             strategy = choose_strategy(needs_retrieval, dscore)
 
-            # 公共元信息
             meta = {
                 "index": idx,
                 "question": item.get("question"),
@@ -186,14 +172,12 @@ def run_single_combo(alpha_pos: float, alpha_neg: float,
                 "needs_retrieval": needs_retrieval,
                 "d_seper_full_score": dscore,
                 "doc_titles": [d.get("title") for d in docs] if docs else [],
-                # 记录当前组合（即使该样本策略没用到某个 α）
                 "combo_alpha_pos": alpha_pos,
                 "combo_alpha_neg": alpha_neg,
                 "strategy": strategy,
                 "main_token_len": main_len,
             }
 
-            # 执行
             if strategy == "noctx-normal":
                 inputs = tokenizer(prompt_main, return_tensors="pt").to(model.device).input_ids
                 gen_cfg = make_gen_config(tokenizer, DO_SAMPLE)
@@ -206,7 +190,7 @@ def run_single_combo(alpha_pos: float, alpha_neg: float,
                 out_f.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
             elif strategy == "ctx-normal":
-                prompt_ctx, evidence_head = build_ctx_prompt(tokenizer, stem, docs, "pos")  # 中性前缀=pos版本
+                prompt_ctx, evidence_head = build_ctx_prompt(tokenizer, stem, docs, "pos")
                 _ = _check_len(prompt_ctx, "ctx-normal")
                 inputs = tokenizer(prompt_ctx, return_tensors="pt").to(model.device).input_ids
                 gen_cfg = make_gen_config(tokenizer, DO_SAMPLE)
@@ -265,9 +249,8 @@ def run_single_combo(alpha_pos: float, alpha_neg: float,
         pbar.close()
     print(f"Done combo pos={alpha_pos}, neg={alpha_neg} -> {out_path}")
 
-# ====== 主入口：跑所有 (pos, neg) 组合 ======
 def main():
-    assert HARMFUL_THRESHOLD < USEFUL_THRESHOLD, "要求：HARMFUL_THRESHOLD < USEFUL_THRESHOLD"
+    assert HARMFUL_THRESHOLD < USEFUL_THRESHOLD, "HARMFUL_THRESHOLD < USEFUL_THRESHOLD"
 
     print("Loading model and tokenizer...")
     model = LMWrapper(
