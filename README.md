@@ -26,8 +26,7 @@ You can create a conda environment by running the command below.
 conda env create -f environment.yml
 ```
 ## 🚀 Quick start
-
-You can get our final results by by running the command below.
+We provide [example data](example_data.jsonl). You can get our final results by by running the command below.
 
 ```
 python example.py
