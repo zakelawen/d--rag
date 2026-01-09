@@ -19,7 +19,7 @@ OFFLOAD_DIR = "./offload"
 DEVICE_MAP = "auto"
 MAX_MEMORY = None
 
-INPUT_JSONL = "/home/qluai/zjs/TruthTorchLM-main/实验/my_method/medexqa/medexqa_llama_seper_results_20251214_003509.jsonl"
+INPUT_JSONL = "example data.jsonl"
 
 HARMFUL_THRESHOLD = -0.0458
 USEFUL_THRESHOLD  =  0.1622
@@ -32,7 +32,7 @@ EVIDENCE_SEP = "\n\n---\n\n"
 ALPHA_NEG_VALUES = [0.05, 0.1, 0.2]
 ALPHA_POS_VALUES = [0.1, 0.5, 1.0]
 
-BASE_OUTPUT_PATH = "/home/qluai/zjs/TruthTorchLM-main/实验/my_method/medexqa"
+BASE_OUTPUT_PATH = "/medexqa"
 
 def load_jsonl(path: str) -> List[Dict[str, Any]]:
     data = []
