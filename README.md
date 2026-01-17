@@ -45,6 +45,10 @@ python example.py
 
 [example.ipynb](example.ipynb) contains the complete implementation of our pipeline.
 
+```bash
+run example.ipynb
+```
+
 we use Qwen3-Embedding-4B as our embedding model. 
 
 📚Medical textbook data coming soon.
@@ -59,13 +63,23 @@ python get_context_for_each_query_V2.py
 
 Implementation code for a subset of baseline methods.
 
-[RAG.ipynb](RAG.ipynb) — Retrieval-Augmented Generation baseline.
+Retrieval-Augmented Generation baseline.
 
-[cad.ipynb](cad.ipynb) — Context-Aware Decoding (CAD) baseline.
+```bash
+run RAG.ipynb
+```
 
-[dola.ipynb](dola.ipynb) — Decoding by Contrasting Layers (DoLa) baseline.
+Context-Aware Decoding (CAD) baseline.
 
+```bash
+run cad.ipynb
+```
 
+Decoding by Contrasting Layers (DoLa) baseline.
+
+```bash
+run dola.ipynb
+```
 
 
 
