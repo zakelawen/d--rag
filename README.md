@@ -25,15 +25,12 @@ Retrieval-Augmented Generation (RAG) mitigates hallucinations in large language 
 3. [📊 Baselines](#baselines)
 
 
-
-
 ## ⚙️ Installation
 You can create a conda environment by running the command below.
 
 ```
 conda env create -f environment.yml
 ```
-<pre><code>conda env create -f environment.yml</code></pre>
 
 ## 🚀 Quick start
 We provide [example data](example_data.jsonl). You can get our final results by by running the command below.
@@ -41,6 +38,7 @@ We provide [example data](example_data.jsonl). You can get our final results by 
 ```
 python example.py
 ```
+
 📝 Your input file should be a `jsonl`.
 
 [example.ipynb](example.ipynb) contains the complete implementation of our pipeline.
@@ -54,6 +52,7 @@ we use Qwen3-Embedding-4B as our embedding model.
 ```
 python get_context_for_each_query_V2.py
 ```
+
 ## 📊 Baselines
 
 Implementation code for a subset of baseline methods.
