@@ -29,9 +29,12 @@ Retrieval-Augmented Generation (RAG) mitigates hallucinations in large language 
 
 ## ⚙️ Installation
 You can create a conda environment by running the command below.
-```markdown
+
+```
 conda env create -f environment.yml
 ```
+<pre><code>conda env create -f environment.yml</code></pre>
+
 ## 🚀 Quick start
 We provide [example data](example_data.jsonl). You can get our final results by by running the command below.
 
