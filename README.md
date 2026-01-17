@@ -18,6 +18,8 @@ Retrieval-Augmented Generation (RAG) mitigates hallucinations in large language 
   <img src="figure/D²-RAG.svg" alt="D²-RAG Framework" width="90%">
 </p>
 
+![D²-RAG Framework](figure/D²-RAG.svg)
+
 
 ## 📋 Content
 1. [⚙️ Installation](#installation)
