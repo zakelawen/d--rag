@@ -37,7 +37,7 @@ conda env create -f environment.yml
 ## 🚀 Quick start
 We provide [example data](example_data.jsonl). You can get our final results by by running the command below.
 
-```
+```bash
 python example.py
 ```
 
@@ -51,7 +51,7 @@ we use Qwen3-Embedding-4B as our embedding model.
 
 [get_context_for_each_query_V2.py](get_context_for_each_query_V2.py) — Retrieves relevant documents for each query, powered by [LlamaIndex](https://www.llamaindex.ai/).
 
-```
+```bash
 python get_context_for_each_query_V2.py
 ```
 
