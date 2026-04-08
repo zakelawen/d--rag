@@ -86,7 +86,7 @@ run dola.ipynb
 ```bash
 @inproceedings{Zhang2026d-rag,
     author    = {Jinshuo Zhang, Xiaoding Zhou, Weiyu Zhang, Guoqiang Chen, Ying Lian, Xiaoyang Meng, Yonghe Chen, Hongjiao Guan, Jiasheng Si and Wenpeng Lu},
-    title     = {D²-RAG: Dual-Decision Retrieval-Augmented Generation via Multi-Dimensional Uncertainty and Utility-Aware Decoding},
+    title     = {{D}$^2$-{RAG}: Dual-Decision Retrieval-Augmented Generation via Multi-Dimensional Uncertainty and Utility-Aware Decoding},
     booktitle = {Findings of the Association for Computational Linguistics: ACL 2026},
     year      = {2026}
 }
