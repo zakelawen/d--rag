@@ -87,7 +87,7 @@ run dola.ipynb
 @inproceedings{Zhang2026d-rag,
     author    = {Jinshuo Zhang, Xiaoding Zhou, Weiyu Zhang, Guoqiang Chen, Ying Lian, Xiaoyang Meng, Yonghe Chen, Hongjiao Guan, Jiasheng Si and Wenpeng Lu},
     title     = {D²-RAG: Dual-Decision Retrieval-Augmented Generation via Multi-Dimensional Uncertainty and Utility-Aware Decoding},
-    booktitle = {Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics},
+    booktitle = {Findings of the Association for Computational Linguistics: ACL 2026},
     year      = {2026}
 }
 
