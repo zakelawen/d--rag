@@ -75,12 +75,6 @@ Context-Aware Decoding (CAD) baseline.
 run cad.ipynb
 ```
 
-Decoding by Contrasting Layers (DoLa) baseline.
-
-```bash
-run dola.ipynb
-```
-
 ## Citation
 
 ```bash
